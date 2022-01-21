@@ -2,9 +2,16 @@ import logging
 import gunicorn.glogging
 
 
+filtered_routes = [
+    "/healthz",
+    "/livez",
+    "/readyz",
+]
+
+
 class HealthzFilter(logging.Filter):
     def filter(self, record):
-        return "/healthz" not in record.getMessage()
+        return not any(route in record.getMessage() for route in filtered_routes)
 
 
 class Logger(gunicorn.glogging.Logger):
